@@ -12,7 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Pencil, Trash2, Plus, LogOut } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, Sparkles } from "lucide-react";
+import { generateTasks } from "@/lib/generate-tasks.functions";
 
 type Note = {
   id: string;
