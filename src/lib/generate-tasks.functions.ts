@@ -31,7 +31,7 @@ Rules:
 Title: ${data.title}`,
       generation_config: {
         max_output_tokens: 65536,
-        thinkingLevel: "medium",
+        thinking_level: "medium",
       },
     });
 
