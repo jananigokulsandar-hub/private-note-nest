@@ -12,7 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Pencil, Trash2, Plus, LogOut } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, Sparkles } from "lucide-react";
+import { generateTasks } from "@/lib/generate-tasks.functions";
 
 type Note = {
   id: string;
@@ -47,6 +48,24 @@ function NotesPage() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [saving, setSaving] = useState(false);
+  const [generating, setGenerating] = useState(false);
+
+  async function handleGenerate() {
+    if (!title.trim()) {
+      setError("Enter a title first, then click Generate.");
+      return;
+    }
+    setGenerating(true);
+    setError(null);
+    try {
+      const result = await generateTasks({ data: { title: title.trim() } });
+      setBody(result.body);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not generate tasks");
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   async function loadNotes() {
     setLoading(true);
@@ -146,12 +165,23 @@ function NotesPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Input
-                  placeholder="Title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleGenerate}
+                    disabled={generating || !title.trim()}
+                  >
+                    <Sparkles className="mr-1 h-4 w-4" />
+                    {generating ? "Generating…" : "Generate"}
+                  </Button>
+                </div>
                 <Textarea
                   placeholder="Write your note…"
                   value={body}
